@@ -6,18 +6,19 @@
 #include "first_of.hpp"
 
 //-----[ TEMPLATE CLASS: State ]------------------------------------------------
-template <typename CTX, typename T, typename PARENT, typename ... CHILDREN>
+template <typename T, typename PARENT, typename ... CHILDREN>
 class State : 
-	public AbstractState<CTX>
+	public AbstractState<typename PARENT::visitor_type>
 {
-	template <typename CTX_, typename T_, typename PARENT_, typename ... CHILDREN_>
+	template <typename T_, typename PARENT_, typename ... CHILDREN_>
 	friend
 	class State;
 	
 public:
-	using visitor_type = typename state_machine_traits<CTX>::visitor_type;
 	using parent_type = PARENT;
+	using visitor_type = typename parent_type::visitor_type;
 	using abstract_event_type = AbstractEvent<visitor_type>;
+	using state_machine_type = typename parent_type::state_machine_type;
 	
 public:
 	State(parent_type& parent):	
@@ -34,10 +35,10 @@ public:
 		//Dispatch to current child first
 		if (_state) {
 			bool result = _state->dispatch(e)();
-			if (result) return HANDLED;
+			if (result) return [](){ return true; };
 		}
 		
-		return AbstractState<CTX>::dispatch(e);
+		return AbstractState<visitor_type>::dispatch(e);
 	}
 	
 	template <typename DEST>
@@ -67,6 +68,10 @@ protected:
 		}
 	}
 	
+	inline auto& root() const {
+		return parent<state_machine_type>();
+	}
+	
 private:
 	void _init() override {
 		_state = std::make_unique<first_of_t<CHILDREN...>>(static_cast<T&>(*this));
@@ -80,7 +85,7 @@ private:
 	
 	template <typename DEST> 
 	bool _doTransition() {
-		std::cout << childName() << " -> " << ctti::nameof<DEST>() << std::endl;
+		std::cout << "\033[1;33mTRANSITION: " << childName() << " -> " << ctti::nameof<DEST>() << "\033[m" << std::endl;
 		
 		_deinit();
 		_state = std::make_unique<DEST>(static_cast<T&>(*this));
@@ -90,20 +95,21 @@ private:
 	
 private:
 	parent_type& _parent;
-	std::unique_ptr<AbstractState<CTX>> _state;
+	std::unique_ptr<AbstractState<visitor_type>> _state;
 };
 
 //-----[ TEMPLATE CLASS: State ]------------------------------------------------
 /**
 * @brief Specialization of State with no children (i.e., a leaf state)
 */
-template <typename CTX, typename T, typename PARENT>
-class State<CTX, T, PARENT> : 
-	public AbstractState<CTX>
+template <typename T, typename PARENT>
+class State<T, PARENT> : 
+	public AbstractState<typename PARENT::visitor_type>
 {
 public:
-	using visitor_type = typename state_machine_traits<CTX>::visitor_type;
 	using parent_type = PARENT;
+	using visitor_type = typename parent_type::visitor_type;
+	using state_machine_type = typename parent_type::state_machine_type;
 	
 public:
 	State(parent_type& parent) :
@@ -132,6 +138,10 @@ protected:
 		} else {
 			return _parent.template parent<P_>();
 		}
+	}
+	
+	inline auto& root() const {
+		return parent<state_machine_type>();
 	}
 	
 private:

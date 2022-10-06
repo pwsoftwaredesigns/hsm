@@ -4,11 +4,11 @@
 #include "_common.hpp"
 
 //-----[ TEMPLATE CLASS: AbstractState ]----------------------------------------
-template <typename CTX>
+template <typename VISITOR>
 class AbstractState :
-	public state_machine_traits<CTX>::visitor_type
+	public VISITOR
 {
-	template <typename CTX_, typename T_, typename PARENT_, typename ... CHILDREN_>
+	template <typename T_, typename PARENT_, typename ... CHILDREN_>
 	friend
 	class State;
 	
@@ -16,14 +16,15 @@ class AbstractState :
 	friend
 	class StateMachine;
 	
-	using visitor_type = typename state_machine_traits<CTX>::visitor_type;
-	
 public:
 	AbstractState() = default;
 	virtual ~AbstractState() = default;
 	
+	AbstractState(const AbstractState&) = delete;
+	AbstractState& operator=(const AbstractState&) = delete;
+	
 public:
-	virtual state_return_type dispatch(const AbstractEvent<visitor_type>& e) {
+	virtual state_return_type dispatch(const AbstractEvent<VISITOR>& e) {
 		return e.accept(*this);
 	}
 	

@@ -5,6 +5,7 @@
 #include <ctti/nameof.hpp>
 #include <string_view>
 #include <map.h>
+#include <cassert>
 #include "AbstractEvent.hpp"
 #include "Event.hpp"
 #include "AbstractState.hpp"
@@ -41,6 +42,12 @@
 //******************************************************************************
 //******************************************************************************
 
+constexpr int A = 10;
+constexpr int B = 20;
+
+//******************************************************************************
+//******************************************************************************
+
 class EventVisitor;
 
 struct Event1_name { static const char* value() { return "Event1"; } };
@@ -56,21 +63,11 @@ public:
 	virtual state_return_type visit(const Event2& e) { return PASS; }
 };
 
-////-----[ STRUCT: Context ]------------------------------------------------------
-//struct Context {
-//	using visitor_type = EventVisitor;
-//	
-//	int a;
-//};
-
 class Root;
 class State1;
 class State11;
 class State12;
 class State2;
-
-//using MyStateMachine = StateMachine<Context, Root>;
-
 class MyStateMachine;
 
 template<>
@@ -82,19 +79,21 @@ class MyStateMachine :
 	public StateMachine<MyStateMachine, Root>
 {
 public:
-	MyStateMachine(int f):
-		foo(f)
+	MyStateMachine():
+		a(A),
+		b(B)
 	{
-		
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
 	
 public:
-	int foo;
+	int a;
+	int b;
 };
 
 //-----[ CLASS: Root ]----------------------------------------------------------
 class Root :
-	public State<MyStateMachine, Root, MyStateMachine, State1, State2>
+	public State<Root, MyStateMachine, State1, State2>
 {
 public:
 	Root(parent_type& parent) :
@@ -105,6 +104,9 @@ public:
 		//The following lines shall result in a compilation error
 		//deinit();
 		//init();
+		
+		assert(root().a == A);
+		assert(root().b == B);
 	}
 	
 	~Root() {
@@ -128,7 +130,7 @@ public:
 
 //-----[ CLASS: State1 ]--------------------------------------------------------
 class State1 :
-	public State<MyStateMachine, State1, Root, State11, State12>
+	public State<State1, Root, State11, State12>
 {
 public:
 	State1(parent_type& parent) :
@@ -160,7 +162,7 @@ private:
 
 //-----[ CLASS: State11 ]-------------------------------------------------------
 class State11 :
-	public State<MyStateMachine, State11, State1>
+	public State<State11, State1>
 {
 public:
 	State11(parent_type& parent) : 
@@ -190,13 +192,16 @@ public:
 
 //-----[ CLASS: State12 ]-------------------------------------------------------
 class State12 :
-	public State<MyStateMachine, State12, State1>
+	public State<State12, State1>
 {
 public:
 	State12(parent_type& parent) : 
 		State(parent) 
 	{
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
+			
+		++root().a;
+		++root().b;
 	}
 	
 	~State12() {
@@ -220,7 +225,7 @@ public:
 
 //-----[ CLASS: State2 ]--------------------------------------------------------
 class State2 :
-	public State<MyStateMachine, State2, Root>
+	public State<State2, Root>
 {
 public:
 	State2(parent_type& parent) :
@@ -235,8 +240,6 @@ public:
 	
 	state_return_type visit(const Event1& e) override { 
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
-			
-		std::cout << "parent<MyStateMachine>().foo=" << parent<MyStateMachine>().foo << std::endl;
 			
 		return HANDLED;
 	}
@@ -253,7 +256,8 @@ int main() {
 	Event1 e1(10);
 	Event2 e2;
 	
-	PRINT_STATEMENT(MyStateMachine sm(100);)
+	PRINT_STATEMENT(MyStateMachine sm;)
+	sm.init();
 	std::cout << std::endl;
 	
 	PRINT_STATEMENT(sm.dispatch(e1);)

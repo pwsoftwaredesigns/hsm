@@ -8,15 +8,16 @@ template <typename CTX, typename ROOT>
 class StateMachine {
 public:
 	using visitor_type = typename state_machine_traits<CTX>::visitor_type;
+	using state_machine_type = CTX;
 	
 public:
 	StateMachine()
 	{
-		_init();
+		
 	}
 	
 	~StateMachine() {
-		_deinit();
+		
 	}
 	
 public:
@@ -28,19 +29,18 @@ public:
 		}
 	}
 	
-private:
-	void _init() {
+	void init() {
 		_state = std::make_unique<ROOT>(static_cast<CTX&>(*this));
 		_state->_init();
 	}
 	
-	void _deinit() {
+	void deinit() {
 		_state->_deinit();
 		_state.reset();
 	}
 	
 private:
-	std::unique_ptr<AbstractState<CTX>> _state;
+	std::unique_ptr<AbstractState<visitor_type>> _state;
 };
 
 #endif //STATEMACHINE_HPP_
