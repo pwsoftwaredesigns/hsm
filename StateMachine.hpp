@@ -19,9 +19,18 @@ public:
 		
 	}
 	
-	~StateMachine() {
-		
+	~StateMachine() 
+	{	
+		/*
+		* Ideally, deinit() needs to be called by T otherwise a substate
+		* could access T (via parent()) after it has been destructed.
+		*/
+		deinit();
 	}
+	
+	//Prevent copy
+	StateMachine(const StateMachine&) = delete;
+	StateMachine& operator=(const StateMachine&) = delete;
 	
 public:
 	bool dispatch(const AbstractEvent<visitor_type>& e) {
@@ -34,11 +43,11 @@ public:
 	
 	void init() {
 		_state = std::make_unique<ROOT>(static_cast<T&>(*this));
-		_state->_init();
+		if (_state) _state->_init();
 	}
 	
 	void deinit() {
-		_state->_deinit();
+		if (_state) _state->_deinit();
 		_state.reset();
 	}
 	

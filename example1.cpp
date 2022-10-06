@@ -3,6 +3,8 @@
 #include "includes.hpp"
 
 #define PRINT_STATEMENT(s_) std::cout << "\033[1;32m" << #s_ << "\033[m" << std::endl; s_
+#define PRINT_CURRENT_STATE(sm_) std::cout << "\033[1;34mCurrent State: " << sm_.currentStateName() << "\033[m" << std::endl << std::endl
+#define PRINT_TRACE() std::cout << __PRETTY_FUNCTION__ << std::endl
 	
 #define DEFINE_BASIC_STATE(name_, parent_, ...)\
 	class name_ :\
@@ -12,26 +14,23 @@
 		name_(parent_type& parent) :\
 			State(parent)\
 		{\
-			std::cout << __PRETTY_FUNCTION__ << std::endl;\
+			PRINT_TRACE();\
 		}\
 		\
 		~name_() {\
-			std::cout << __PRETTY_FUNCTION__ << std::endl;\
+			PRINT_TRACE();\
 		}\
 		\
 		state_return_type visit(const Event1& e) override {\
-			std::cout << __PRETTY_FUNCTION__ << std::endl;\
+			PRINT_TRACE();\
 			return PASS;\
 		}\
 		\
 		state_return_type visit(const Event2& e) override {\
-			std::cout << __PRETTY_FUNCTION__ << std::endl;\
+			PRINT_TRACE();\
 			return PASS;\
 		}\
 	}
-	
-	
-#define PRINT_CURRENT_STATE(sm_) std::cout << "\033[1;34mCurrent State: " << sm_.currentStateName() << "\033[m" << std::endl << std::endl
 	
 //******************************************************************************
 //******************************************************************************
@@ -42,6 +41,7 @@ constexpr int B = 20;
 //******************************************************************************
 //******************************************************************************
 
+//Must forward-declare all states
 class Root;
 class State1;
 class State11;
@@ -51,6 +51,7 @@ class State21;
 class State22;
 class MyStateMachine;
 
+//Use helper macro to generate boiler-plate code for state machine
 STATE_MACHINE(
 	MyStateMachine, 
 	Root,
@@ -62,7 +63,13 @@ public:
 		a(A),
 		b(B)
 	{
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
+	}
+	
+	~MyStateMachine() 
+	{
+		//deinit();
+		PRINT_TRACE();
 	}
 	
 public:
@@ -78,7 +85,7 @@ public:
 	Root(parent_type& parent) :
 		State(parent)
 	{
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 			
 		//The following lines shall result in a compilation error
 		//deinit();
@@ -89,17 +96,17 @@ public:
 	}
 	
 	~Root() {
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 	}
 	
 public:
 	state_return_type visit(const Event1& e) override { 
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 		return HANDLED;
 	}
 	
 	state_return_type visit(const Event2& e) override { 
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 		return HANDLED;
 	}
 	
@@ -115,20 +122,20 @@ public:
 	State1(parent_type& parent) :
 		State(parent)
 	{
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 	}
 	
 	~State1() {
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 	}
 	
 	state_return_type visit(const Event1& e) override { 
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 		return PASS;
 	}
 	
 	state_return_type visit(const Event2& e) override { 
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 		return PASS;
 	}
 	
@@ -147,22 +154,22 @@ public:
 	State11(parent_type& parent) : 
 		State(parent) 
 	{
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 	}
 	
 	~State11() {
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 	}
 	
 public:
 	state_return_type visit(const Event1& e) override { 
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 		parent().publicVariable = e.arg();
 		return PASS;
 	}
 	
 	state_return_type visit(const Event2& e) override { 
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 
 		//Transition to sibling state
 		return transition<State12>();
@@ -177,19 +184,19 @@ public:
 	State12(parent_type& parent) : 
 		State(parent) 
 	{
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 			
 		++root().a;
 		++root().b;
 	}
 	
 	~State12() {
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 	}
 	
 public:
 	state_return_type visit(const Event1& e) override { 
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 		
 		parent<Root>().foo = e.arg();
 			
@@ -197,7 +204,7 @@ public:
 	}
 	
 	state_return_type visit(const Event2& e) override { 
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 		return transition<State22>();
 	}
 };
@@ -210,21 +217,21 @@ public:
 	State2(parent_type& parent) :
 		State(parent)
 	{
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 	}
 	
 	~State2() {
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 	}
 	
 	state_return_type visit(const Event1& e) override { 
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 			
 		return HANDLED;
 	}
 	
 	state_return_type visit(const Event2& e) override { 
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		PRINT_TRACE();
 
 		//Self-transition
 		return transition<State2>();
@@ -256,6 +263,8 @@ int main() {
 	PRINT_CURRENT_STATE(sm);
 	PRINT_STATEMENT(sm.dispatch(e2);)
 	PRINT_CURRENT_STATE(sm);
+	
+	sm.deinit();
 	
 	return 0;
 }
