@@ -15,15 +15,12 @@ class State :
 	class State;
 	
 public:
-	using ctx_type = CTX;
-	using visitor_type = typename ctx_type::visitor_type;
+	using visitor_type = typename state_machine_traits<CTX>::visitor_type;
 	using parent_type = PARENT;
 	using abstract_event_type = AbstractEvent<visitor_type>;
 	
 public:
-	State(ctx_type& context, parent_type& parent):
-		AbstractState<CTX>(context),
-		
+	State(parent_type& parent):	
 		_parent(parent)
 	{
 		
@@ -72,7 +69,7 @@ protected:
 	
 private:
 	void _init() override {
-		_state = std::make_unique<first_of_t<CHILDREN...>>(this->context(), static_cast<T&>(*this));
+		_state = std::make_unique<first_of_t<CHILDREN...>>(static_cast<T&>(*this));
 		_state->_init();
 	}
 	
@@ -86,7 +83,7 @@ private:
 		std::cout << childName() << " -> " << ctti::nameof<DEST>() << std::endl;
 		
 		_deinit();
-		_state = std::make_unique<DEST>(this->context(), static_cast<T&>(*this));
+		_state = std::make_unique<DEST>(static_cast<T&>(*this));
 			
 		return true;
 	}
@@ -105,14 +102,11 @@ class State<CTX, T, PARENT> :
 	public AbstractState<CTX>
 {
 public:
-	using ctx_type = CTX;
-	using visitor_type = typename ctx_type::visitor_type;
+	using visitor_type = typename state_machine_traits<CTX>::visitor_type;
 	using parent_type = PARENT;
 	
 public:
-	State(ctx_type& context, parent_type& parent) :
-		AbstractState<CTX>(context),
-		
+	State(parent_type& parent) :
 		_parent(parent)
 	{
 		

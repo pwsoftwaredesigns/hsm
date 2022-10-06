@@ -56,16 +56,12 @@ public:
 	virtual state_return_type visit(const Event2& e) { return PASS; }
 };
 
-//-----[ STRUCT: Context ]------------------------------------------------------
-struct Context {
-	using visitor_type = EventVisitor;
-	
-	void defer(const AbstractEvent<visitor_type>& e) {
-		std::cout << "Context::defer(" << e.name() << ")" << std::endl;
-	}
-	
-	int a;
-};
+////-----[ STRUCT: Context ]------------------------------------------------------
+//struct Context {
+//	using visitor_type = EventVisitor;
+//	
+//	int a;
+//};
 
 class Root;
 class State1;
@@ -73,27 +69,36 @@ class State11;
 class State12;
 class State2;
 
-using MyStateMachine = StateMachine<Context, Root>;
+//using MyStateMachine = StateMachine<Context, Root>;
 
-/*
+class MyStateMachine;
+
+template<>
+struct state_machine_traits<MyStateMachine> {
+	using visitor_type = EventVisitor;
+};
+
 class MyStateMachine :
-	StateMachine<MyStateMachine, Root>
+	public StateMachine<MyStateMachine, Root>
 {
 public:
-	
+	MyStateMachine(int f):
+		foo(f)
+	{
+		
+	}
 	
 public:
 	int foo;
 };
-*/
 
 //-----[ CLASS: Root ]----------------------------------------------------------
 class Root :
-	public State<Context, Root, MyStateMachine, State1, State2>
+	public State<MyStateMachine, Root, MyStateMachine, State1, State2>
 {
 public:
-	Root(ctx_type& context, parent_type& parent) :
-		State(context, parent)
+	Root(parent_type& parent) :
+		State(parent)
 	{
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 			
@@ -109,7 +114,6 @@ public:
 public:
 	state_return_type visit(const Event1& e) override { 
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
-		std::cout << "context().a=" << context().a << std::endl;
 		return HANDLED;
 	}
 	
@@ -124,11 +128,11 @@ public:
 
 //-----[ CLASS: State1 ]--------------------------------------------------------
 class State1 :
-	public State<Context, State1, Root, State11, State12>
+	public State<MyStateMachine, State1, Root, State11, State12>
 {
 public:
-	State1(ctx_type& context, parent_type& parent) :
-		State(context, parent)
+	State1(parent_type& parent) :
+		State(parent)
 	{
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
@@ -139,8 +143,6 @@ public:
 	
 	state_return_type visit(const Event1& e) override { 
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
-		std::cout << "context().a=" << context().a << std::endl;
-		PRINT_STATEMENT(context().a = 10);
 		return PASS;
 	}
 	
@@ -158,11 +160,11 @@ private:
 
 //-----[ CLASS: State11 ]-------------------------------------------------------
 class State11 :
-	public State<Context, State11, State1>
+	public State<MyStateMachine, State11, State1>
 {
 public:
-	State11(ctx_type& context, parent_type& parent) : 
-		State(context, parent) 
+	State11(parent_type& parent) : 
+		State(parent) 
 	{
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
@@ -174,7 +176,6 @@ public:
 public:
 	state_return_type visit(const Event1& e) override { 
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
-		std::cout << "context().a=" << context().a << std::endl;
 		parent().publicVariable = e.arg();
 		return PASS;
 	}
@@ -189,11 +190,11 @@ public:
 
 //-----[ CLASS: State12 ]-------------------------------------------------------
 class State12 :
-	public State<Context, State12, State1>
+	public State<MyStateMachine, State12, State1>
 {
 public:
-	State12(ctx_type& context, parent_type& parent) : 
-		State(context, parent) 
+	State12(parent_type& parent) : 
+		State(parent) 
 	{
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
@@ -219,11 +220,11 @@ public:
 
 //-----[ CLASS: State2 ]--------------------------------------------------------
 class State2 :
-	public State<Context, State2, Root>
+	public State<MyStateMachine, State2, Root>
 {
 public:
-	State2(ctx_type& context, parent_type& parent) :
-		State(context, parent)
+	State2(parent_type& parent) :
+		State(parent)
 	{
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
@@ -234,8 +235,8 @@ public:
 	
 	state_return_type visit(const Event1& e) override { 
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
-		
-		defer(e);
+			
+		std::cout << "parent<MyStateMachine>().foo=" << parent<MyStateMachine>().foo << std::endl;
 			
 		return HANDLED;
 	}
@@ -252,8 +253,7 @@ int main() {
 	Event1 e1(10);
 	Event2 e2;
 	
-	Context ctx;
-	PRINT_STATEMENT(MyStateMachine sm(ctx);)
+	PRINT_STATEMENT(MyStateMachine sm(100);)
 	std::cout << std::endl;
 	
 	PRINT_STATEMENT(sm.dispatch(e1);)

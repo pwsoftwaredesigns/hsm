@@ -1,16 +1,16 @@
 #ifndef STATEMACHINE_HPP_
 #define STATEMACHINE_HPP_
 
+#include "_common.hpp"
+
 //-----[ CLASS: StateMachine ]--------------------------------------------------
 template <typename CTX, typename ROOT>
 class StateMachine {
 public:
-	using ctx_type = CTX;
-	using visitor_type = typename ctx_type::visitor_type;
+	using visitor_type = typename state_machine_traits<CTX>::visitor_type;
 	
 public:
-	StateMachine(ctx_type& context):
-		_context(context)
+	StateMachine()
 	{
 		_init();
 	}
@@ -30,7 +30,7 @@ public:
 	
 private:
 	void _init() {
-		_state = std::make_unique<ROOT>(_context, *this);
+		_state = std::make_unique<ROOT>(static_cast<CTX&>(*this));
 		_state->_init();
 	}
 	
@@ -40,8 +40,7 @@ private:
 	}
 	
 private:
-	ctx_type& _context;
-	std::unique_ptr<AbstractState<ctx_type>> _state;
+	std::unique_ptr<AbstractState<CTX>> _state;
 };
 
 #endif //STATEMACHINE_HPP_
