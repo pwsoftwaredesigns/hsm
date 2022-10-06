@@ -39,6 +39,36 @@
 #define _STATE_MACHINE_VISITOR_VISITX(name_, ...)\
 	virtual state_return_type visit(const name_& e) { return PASS; }
 	
+	
+#define DEFINE_BASIC_STATE(name_, parent_, ...)\
+	class name_ :\
+		public State<name_, parent_, ##__VA_ARGS__>\
+	{\
+	public:\
+		name_(parent_type& parent) :\
+			State(parent)\
+		{\
+			std::cout << __PRETTY_FUNCTION__ << std::endl;\
+		}\
+		\
+		~name_() {\
+			std::cout << __PRETTY_FUNCTION__ << std::endl;\
+		}\
+		\
+		state_return_type visit(const Event1& e) override {\
+			std::cout << __PRETTY_FUNCTION__ << std::endl;\
+			return PASS;\
+		}\
+		\
+		state_return_type visit(const Event2& e) override {\
+			std::cout << __PRETTY_FUNCTION__ << std::endl;\
+			return PASS;\
+		}\
+	}
+	
+	
+#define PRINT_CURRENT_STATE(sm_) std::cout << "\033[1;34mCurrent State: " << sm_.currentStateName() << "\033[m" << std::endl << std::endl
+	
 //******************************************************************************
 //******************************************************************************
 
@@ -68,6 +98,8 @@ class State1;
 class State11;
 class State12;
 class State2;
+class State21;
+class State22;
 class MyStateMachine;
 
 template<>
@@ -219,13 +251,13 @@ public:
 	
 	state_return_type visit(const Event2& e) override { 
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
-		return transition<State2>();
+		return transition<State22>();
 	}
 };
 
 //-----[ CLASS: State2 ]--------------------------------------------------------
 class State2 :
-	public State<State2, Root>
+	public State<State2, Root, State21, State22>
 {
 public:
 	State2(parent_type& parent) :
@@ -252,28 +284,31 @@ public:
 	}
 };
 
+DEFINE_BASIC_STATE(State21, State2);
+DEFINE_BASIC_STATE(State22, State2);
+
 int main() {	
 	Event1 e1(10);
 	Event2 e2;
 	
 	PRINT_STATEMENT(MyStateMachine sm;)
 	sm.init();
-	std::cout << std::endl;
+	PRINT_CURRENT_STATE(sm);
 	
 	PRINT_STATEMENT(sm.dispatch(e1);)
-	std::cout << std::endl;
+	PRINT_CURRENT_STATE(sm);
 	PRINT_STATEMENT(sm.dispatch(e2);)
-	std::cout << std::endl;
+	PRINT_CURRENT_STATE(sm);
 	
 	PRINT_STATEMENT(sm.dispatch(e1);)
-	std::cout << std::endl;
+	PRINT_CURRENT_STATE(sm);
 	PRINT_STATEMENT(sm.dispatch(e2);)
-	std::cout << std::endl;
+	PRINT_CURRENT_STATE(sm);
 		
 	PRINT_STATEMENT(sm.dispatch(e1);)
-	std::cout << std::endl;
+	PRINT_CURRENT_STATE(sm);
 	PRINT_STATEMENT(sm.dispatch(e2);)
-	std::cout << std::endl;
+	PRINT_CURRENT_STATE(sm);
 	
 	return 0;
 }

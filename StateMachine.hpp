@@ -4,11 +4,11 @@
 #include "_common.hpp"
 
 //-----[ CLASS: StateMachine ]--------------------------------------------------
-template <typename CTX, typename ROOT>
+template <typename T, typename ROOT>
 class StateMachine {
 public:
-	using visitor_type = typename state_machine_traits<CTX>::visitor_type;
-	using state_machine_type = CTX;
+	using visitor_type = typename state_machine_traits<T>::visitor_type;
+	using state_machine_type = T;
 	
 public:
 	StateMachine()
@@ -30,13 +30,20 @@ public:
 	}
 	
 	void init() {
-		_state = std::make_unique<ROOT>(static_cast<CTX&>(*this));
+		_state = std::make_unique<ROOT>(static_cast<T&>(*this));
 		_state->_init();
 	}
 	
 	void deinit() {
 		_state->_deinit();
 		_state.reset();
+	}
+	
+	ctti::detail::cstring name() const { return ctti::nameof<T>(); }
+	
+	ctti::detail::cstring currentStateName() const { 
+		if (_state) return _state->childName();
+		else return name();
 	}
 	
 private:
