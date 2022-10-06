@@ -1,0 +1,6 @@
+[submodule "ctti"]
+	path = ctti
+	url = https://github.com/Manu343726/ctti.git
+[submodule "map-macro"]
+	path = map-macro
+	url = https://github.com/swansontec/map-macro.git
