@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cassert>
-#include "includes.hpp"
+#include <pw/hsm/includes.hpp>
 
 #define PRINT_STATEMENT(s_) std::cout << "\033[1;32m" << #s_ << "\033[m" << std::endl; s_
 #define PRINT_CURRENT_STATE(sm_) std::cout << "\033[1;34mCurrent State: " << sm_.currentStateName() << "\033[m" << std::endl << std::endl
@@ -8,7 +8,7 @@
 	
 #define DEFINE_BASIC_STATE(name_, parent_, ...)\
 	class name_ :\
-		public State<name_, parent_, ##__VA_ARGS__>\
+		public ::pw::hsm::State<name_, parent_, ##__VA_ARGS__>\
 	{\
 	public:\
 		name_(parent_type& parent) :\
@@ -21,12 +21,12 @@
 			PRINT_TRACE();\
 		}\
 		\
-		state_return_type visit(const Event1& e) override {\
+		::pw::hsm::state_return_type visit(const Event1& e) override {\
 			PRINT_TRACE();\
 			return PASS;\
 		}\
 		\
-		state_return_type visit(const Event2& e) override {\
+		::pw::hsm::state_return_type visit(const Event2& e) override {\
 			PRINT_TRACE();\
 			return PASS;\
 		}\
@@ -34,6 +34,8 @@
 	
 //******************************************************************************
 //******************************************************************************
+
+using namespace pw::hsm;
 
 constexpr int A = 10;
 constexpr int B = 20;
@@ -79,7 +81,7 @@ public:
 
 //-----[ CLASS: Root ]----------------------------------------------------------
 class Root :
-	public State<Root, MyStateMachine, State1, State2>
+	public ::pw::hsm::State<Root, MyStateMachine, State1, State2>
 {
 public:
 	Root(parent_type& parent) :
@@ -100,12 +102,12 @@ public:
 	}
 	
 public:
-	state_return_type visit(const Event1& e) override { 
+	::pw::hsm::state_return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		return HANDLED;
 	}
 	
-	state_return_type visit(const Event2& e) override { 
+	::pw::hsm::state_return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 		return HANDLED;
 	}
@@ -116,7 +118,7 @@ public:
 
 //-----[ CLASS: State1 ]--------------------------------------------------------
 class State1 :
-	public State<State1, Root, State11, State12>
+	public ::pw::hsm::State<State1, Root, State11, State12>
 {
 public:
 	State1(parent_type& parent) :
@@ -129,12 +131,12 @@ public:
 		PRINT_TRACE();
 	}
 	
-	state_return_type visit(const Event1& e) override { 
+	::pw::hsm::state_return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
 	
-	state_return_type visit(const Event2& e) override { 
+	::pw::hsm::state_return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
@@ -148,7 +150,7 @@ private:
 
 //-----[ CLASS: State11 ]-------------------------------------------------------
 class State11 :
-	public State<State11, State1>
+	public ::pw::hsm::State<State11, State1>
 {
 public:
 	State11(parent_type& parent) : 
@@ -162,13 +164,13 @@ public:
 	}
 	
 public:
-	state_return_type visit(const Event1& e) override { 
+	::pw::hsm::state_return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		parent().publicVariable = e.arg();
 		return PASS;
 	}
 	
-	state_return_type visit(const Event2& e) override { 
+	::pw::hsm::state_return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 
 		//Transition to sibling state
@@ -178,7 +180,7 @@ public:
 
 //-----[ CLASS: State12 ]-------------------------------------------------------
 class State12 :
-	public State<State12, State1>
+	public ::pw::hsm::State<State12, State1>
 {
 public:
 	State12(parent_type& parent) : 
@@ -195,7 +197,7 @@ public:
 	}
 	
 public:
-	state_return_type visit(const Event1& e) override { 
+	::pw::hsm::state_return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		
 		parent<Root>().foo = e.arg();
@@ -203,7 +205,7 @@ public:
 		return PASS;
 	}
 	
-	state_return_type visit(const Event2& e) override { 
+	::pw::hsm::state_return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 		return transition<State22>();
 	}
@@ -211,7 +213,7 @@ public:
 
 //-----[ CLASS: State2 ]--------------------------------------------------------
 class State2 :
-	public State<State2, Root, State21, State22>
+	public ::pw::hsm::State<State2, Root, State21, State22>
 {
 public:
 	State2(parent_type& parent) :
@@ -224,13 +226,13 @@ public:
 		PRINT_TRACE();
 	}
 	
-	state_return_type visit(const Event1& e) override { 
+	::pw::hsm::state_return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 			
 		return HANDLED;
 	}
 	
-	state_return_type visit(const Event2& e) override { 
+	::pw::hsm::state_return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 
 		//Self-transition

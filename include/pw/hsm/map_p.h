@@ -1,3 +1,6 @@
+#ifndef PW_HSM_MAP_P_H_
+#define PW_HSM_MAP_P_H_
+
 #include "map.h"
 
 #define MAP0_P(f, p, x, peek, ...) f(p, x) MAP_NEXT(peek, MAP1_P)(f, p, peek, __VA_ARGS__)
@@ -21,3 +24,5 @@
  * inserts commas between the results.
  */
 #define MAP_LIST_P(f, p, ...) EVAL(MAP_LIST1_P(f, p, __VA_ARGS__, ()()(), ()()(), ()()(), 0))
+
+#endif //PW_HSM_MAP_P_H_

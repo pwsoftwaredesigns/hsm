@@ -1,9 +1,11 @@
-#ifndef EVENT_HPP_
-#define EVENT_HPP_
+#ifndef PW_HSM_EVENT_HPP_
+#define PW_HSM_EVENT_HPP_
 
 #include "_common.hpp"
 #include "AbstractEvent.hpp"
 #include <tuple>
+
+namespace pw::hsm {
 
 //-----[ TEMPLATE CLASS: Event ]------------------------------------------------
 template <typename NAME, typename VISITOR, typename ... ARGS> 
@@ -33,4 +35,6 @@ private:
 	std::tuple<ARGS...> _args;
 };
 
-#endif //EVENT_HPP_
+} //namespace pw::hsm
+
+#endif //PW_HSM_EVENT_HPP_

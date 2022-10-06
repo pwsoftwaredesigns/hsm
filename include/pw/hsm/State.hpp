@@ -1,5 +1,5 @@
-#ifndef STATE_HPP_
-#define STATE_HPP_
+#ifndef PW_HSM_STATE_HPP_
+#define PW_HSM_STATE_HPP_
 
 #include "_common.hpp"
 #include "AbstractState.hpp"
@@ -7,6 +7,8 @@
 #include <ctti/nameof.hpp>
 #include <functional>
 #include <memory>
+
+namespace pw::hsm {
 
 template <typename T, typename U, typename ENABLE = void>
 struct nearest_ancestor {
@@ -260,4 +262,6 @@ private:
 	parent_type& _parent;
 };
 
-#endif //STATE_HPP_
+} //namespace pw::hsm
+
+#endif //PW_HSM_STATE_HPP_

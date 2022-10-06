@@ -1,9 +1,11 @@
-#ifndef ABSTRACTSTATE_HPP_
-#define ABSTRACTSTATE_HPP_
+#ifndef PW_HSM_ABSTRACTSTATE_HPP_
+#define PW_HSM_ABSTRACTSTATE_HPP_
 
 #include "_common.hpp"
 #include "AbstractEvent.hpp"
 #include <ctti/detail/cstring.hpp>
+
+namespace pw::hsm {
 
 //-----[ TEMPLATE CLASS: AbstractState ]----------------------------------------
 template <typename VISITOR>
@@ -14,7 +16,7 @@ class AbstractState :
 	friend
 	class State;
 	
-	template <typename CTX_, typename ROOT_>
+	template <typename CTX_, typename VISITOR_, typename ROOT_>
 	friend
 	class StateMachine;
 	
@@ -38,4 +40,6 @@ private:
 	virtual void _deinit() {}
 };
 
-#endif //ABSTRACTSTATE_HPP_
+} //namespace pw::hsm
+
+#endif //PW_HSM_ABSTRACTSTATE_HPP_

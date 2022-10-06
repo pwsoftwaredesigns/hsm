@@ -1,16 +1,19 @@
-#ifndef STATEMACHINE_HPP_
-#define STATEMACHINE_HPP_
+#ifndef PW_HSM_STATEMACHINE_HPP_
+#define PW_HSM_STATEMACHINE_HPP_
 
 #include "_common.hpp"
 #include "AbstractState.hpp"
 #include <ctti/nameof.hpp>
 #include <memory>
 
+namespace pw::hsm {
+
 //-----[ CLASS: StateMachine ]--------------------------------------------------
-template <typename T, typename ROOT>
+template <typename T, typename VISITOR, typename ROOT>
 class StateMachine {
 public:
-	using visitor_type = typename state_machine_traits<T>::visitor_type;
+	//using visitor_type = typename state_machine_traits<T>::visitor_type;
+	using visitor_type = VISITOR;
 	using state_machine_type = T;
 	
 public:
@@ -62,4 +65,6 @@ private:
 	std::unique_ptr<AbstractState<visitor_type>> _state;
 };
 
-#endif //STATEMACHINE_HPP_
+} //namespace pw::hsm
+
+#endif //PW_HSM_STATEMACHINE_HPP_

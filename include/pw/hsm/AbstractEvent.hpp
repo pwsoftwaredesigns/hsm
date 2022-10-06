@@ -1,7 +1,9 @@
-#ifndef ABSTRACT_EVENT_HPP_
-#define ABSTRACT_EVENT_HPP_
+#ifndef PW_HSM_ABSTRACT_EVENT_HPP_
+#define PW_HSM_ABSTRACT_EVENT_HPP_
 
 #include "_common.hpp"
+
+namespace pw::hsm {
 
 //-----[ TEMPLATE CLASS: AbstractEvent ]----------------------------------------
 template <typename VISITOR>
@@ -14,4 +16,6 @@ public:
 	virtual const char* name() const = 0;
 };
 
-#endif //ABSTRACT_EVENT_HPP_
+} //namespace pw::hsm
+
+#endif //PW_HSM_ABSTRACT_EVENT_HPP_

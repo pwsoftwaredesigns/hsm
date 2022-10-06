@@ -1,5 +1,5 @@
-#ifndef FIRST_OF_HPP_
-#define FIRST_OF_HPP_
+#ifndef PW_HSM_FIRST_OF_HPP_
+#define PW_HSM_FIRST_OF_HPP_
 
 //-----[ TEMPLATE CLASS: first_of ]---------------------------------------------
 /**
@@ -21,4 +21,4 @@ struct first_of<> {
 template <typename ... TYPES>
 using first_of_t = typename first_of<TYPES...>::type;
 
-#endif //FIRST_OF_HPP_
+#endif //PW_HSM_FIRST_OF_HPP_
