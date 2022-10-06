@@ -4,6 +4,9 @@
 #include "_common.hpp"
 #include "AbstractState.hpp"
 #include "first_of.hpp"
+#include <ctti/nameof.hpp>
+#include <functional>
+#include <memory>
 
 template <typename T, typename U, typename ENABLE = void>
 struct nearest_ancestor {
@@ -117,14 +120,14 @@ public:
 	/**
 	* @brief Use CTTI to get the name of this state (i.e., class)
 	*/
-	ctti::detail::cstring name() const override { return ctti::nameof<T>(); }
+	name_string_type name() const override { return ctti::nameof<T>(); }
 		
 	/**
 	* @brief Use CTTI to recursively get the name of this state's deepest child
 	*
 	* This method will always return the name fo the deepest leaf state
 	*/
-	ctti::detail::cstring childName() const override { 
+	name_string_type childName() const override { 
 		if (_state) return _state->childName();
 		else return name();
 	}
@@ -229,8 +232,8 @@ public:
 		return [this](){ return _parent.template transition<DEST>()(); };
 	}
 	
-	ctti::detail::cstring name() const override { return ctti::nameof<T>(); }
-	ctti::detail::cstring childName() const override { return name(); }
+	name_string_type name() const override { return ctti::nameof<T>(); }
+	name_string_type childName() const override { return name(); }
 	
 protected:
 	template <typename P_ = parent_type>

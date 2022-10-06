@@ -1,44 +1,8 @@
-#include <tuple>
 #include <iostream>
-#include <memory>
-#include <functional>
-#include <ctti/nameof.hpp>
-#include <string_view>
-#include <map.h>
 #include <cassert>
-#include "AbstractEvent.hpp"
-#include "Event.hpp"
-#include "AbstractState.hpp"
-#include "State.hpp"
-#include "StateMachine.hpp"
-#include "first_of.hpp"
-#include "map_p.h"
+#include "includes.hpp"
 
 #define PRINT_STATEMENT(s_) std::cout << "\033[1;32m" << #s_ << "\033[m" << std::endl; s_
-
-#define _EXPAND(x_) _EXPANDX x_
-#define _EXPANDX(...) __VA_ARGS__
-
-#define STATE_MACHINE(name_, context_, root_, ...)\
-	class name_##_VISITOR;\
-	MAP_P(_STATE_MACHINE_EVENT, name_##_VISITOR, ##__VA_ARGS__)\
-	_STATE_MACHINE_VISITOR(name_##_VISITOR, ##__VA_ARGS__);\
-	using name_ = StateMachine<context_, root_>;
-	
-#define _STATE_MACHINE_EVENT(visitor_, x_) _STATE_MACHINE_EVENTX(visitor_, _EXPAND(x_))
-#define _STATE_MACHINE_EVENTX(visitor_, name_, ...) _STATE_MACHINE_EVENTY(visitor_, name_, ##__VA_ARGS__)
-#define _STATE_MACHINE_EVENTY(visitor_, name_, ...)\
-	using name_ = Event<visitor_, ##__VA_ARGS__>;
-
-#define _STATE_MACHINE_VISITOR(name_, ...)\
-	class name_ {\
-	public:\
-		MAP(_STATE_MACHINE_VISITOR_VISIT, ##__VA_ARGS__)\
-	}
-#define _STATE_MACHINE_VISITOR_VISIT(x_) _STATE_MACHINE_VISITOR_VISITX x_
-#define _STATE_MACHINE_VISITOR_VISITX(name_, ...)\
-	virtual state_return_type visit(const name_& e) { return PASS; }
-	
 	
 #define DEFINE_BASIC_STATE(name_, parent_, ...)\
 	class name_ :\
@@ -78,21 +42,6 @@ constexpr int B = 20;
 //******************************************************************************
 //******************************************************************************
 
-class EventVisitor;
-
-struct Event1_name { static const char* value() { return "Event1"; } };
-using Event1 = Event<Event1_name, EventVisitor, int>;
-
-struct Event2_name { static const char* value() { return "Event2"; } };
-using Event2 = Event<Event2_name, EventVisitor>;
-
-//-----[ CLASS: EventVisitor ]--------------------------------------------------
-class EventVisitor {
-public:
-	virtual state_return_type visit(const Event1& e) { return PASS; }
-	virtual state_return_type visit(const Event2& e) { return PASS; }
-};
-
 class Root;
 class State1;
 class State11;
@@ -102,14 +51,12 @@ class State21;
 class State22;
 class MyStateMachine;
 
-template<>
-struct state_machine_traits<MyStateMachine> {
-	using visitor_type = EventVisitor;
-};
-
-class MyStateMachine :
-	public StateMachine<MyStateMachine, Root>
-{
+STATE_MACHINE(
+	MyStateMachine, 
+	Root,
+	(Event1, int),
+	(Event2)
+) {
 public:
 	MyStateMachine():
 		a(A),

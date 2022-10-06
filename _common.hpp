@@ -12,4 +12,7 @@ constexpr auto PASS = [](){ std::cout << "\033[1;33mPASS\033[m" << std::endl; re
 template<typename T>
 struct state_machine_traits;
 
+#include <ctti/detail/cstring.hpp>
+using name_string_type = ctti::detail::cstring;
+
 #endif //_COMMON_HPP_

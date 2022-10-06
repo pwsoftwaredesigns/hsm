@@ -2,6 +2,9 @@
 #define STATEMACHINE_HPP_
 
 #include "_common.hpp"
+#include "AbstractState.hpp"
+#include <ctti/nameof.hpp>
+#include <memory>
 
 //-----[ CLASS: StateMachine ]--------------------------------------------------
 template <typename T, typename ROOT>
@@ -39,9 +42,9 @@ public:
 		_state.reset();
 	}
 	
-	ctti::detail::cstring name() const { return ctti::nameof<T>(); }
+	name_string_type name() const { return ctti::nameof<T>(); }
 	
-	ctti::detail::cstring currentStateName() const { 
+	name_string_type currentStateName() const { 
 		if (_state) return _state->childName();
 		else return name();
 	}

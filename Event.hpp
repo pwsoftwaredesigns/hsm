@@ -3,6 +3,7 @@
 
 #include "_common.hpp"
 #include "AbstractEvent.hpp"
+#include <tuple>
 
 //-----[ TEMPLATE CLASS: Event ]------------------------------------------------
 template <typename NAME, typename VISITOR, typename ... ARGS> 

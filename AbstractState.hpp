@@ -2,6 +2,8 @@
 #define ABSTRACTSTATE_HPP_
 
 #include "_common.hpp"
+#include "AbstractEvent.hpp"
+#include <ctti/detail/cstring.hpp>
 
 //-----[ TEMPLATE CLASS: AbstractState ]----------------------------------------
 template <typename VISITOR>
@@ -28,8 +30,8 @@ public:
 		return e.accept(*this);
 	}
 	
-	virtual ctti::detail::cstring name() const = 0;
-	virtual ctti::detail::cstring childName() const = 0;
+	virtual name_string_type name() const = 0;
+	virtual name_string_type childName() const = 0;
 			
 private:
 	virtual void _init() {}
