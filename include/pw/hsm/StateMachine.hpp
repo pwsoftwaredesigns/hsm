@@ -5,6 +5,9 @@
 #include "AbstractState.hpp"
 #include <ctti/nameof.hpp>
 #include <memory>
+#if PW_HSM_USE_ETL == 1
+	#include <etl/pool.h>
+#endif
 
 namespace pw::hsm {
 
@@ -15,6 +18,13 @@ public:
 	//using visitor_type = typename state_machine_traits<T>::visitor_type;
 	using visitor_type = VISITOR;
 	using state_machine_type = T;
+	
+private:
+#if PW_HSM_USE_ETL == 1
+	using unique_ptr_type = std::unique_ptr<AbstractState<visitor_type>, std::function<void(AbstractState<visitor_type>*)>>;
+#else
+	using unique_ptr_type = std::unique_ptr<AbstractState<visitor_type>>;
+#endif
 	
 public:
 	StateMachine()
@@ -45,7 +55,13 @@ public:
 	}
 	
 	void init() {
+#if PW_HSM_USE_ETL == 1
+		auto s = _statePool.create(static_cast<T&>(*this));
+		_state = unique_ptr_type{s, [this](AbstractState<visitor_type>* ptr){ _statePool.destroy(ptr); }};
+#else
 		_state = std::make_unique<ROOT>(static_cast<T&>(*this));
+#endif
+
 		if (_state) _state->_init();
 	}
 	
@@ -62,7 +78,10 @@ public:
 	}
 	
 private:
-	std::unique_ptr<AbstractState<visitor_type>> _state;
+#if PW_HSM_USE_ETL == 1
+	etl::pool<ROOT, 1> _statePool;
+#endif
+	unique_ptr_type _state;
 };
 
 } //namespace pw::hsm

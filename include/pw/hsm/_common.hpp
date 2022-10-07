@@ -16,6 +16,10 @@
 	#define PW_HSM_PASS_TRACE(...) (void)0
 #endif
 
+#ifndef PW_HSM_USE_ETL
+	#define PW_HSM_USE_ETL 1
+#endif
+
 namespace pw::hsm {
 
 using name_string_type = ctti::detail::cstring;

@@ -12,7 +12,7 @@ template <typename VISITOR>
 class AbstractState :
 	public VISITOR
 {
-	template <typename T_, typename PARENT_, typename ... CHILDREN_>
+	template <typename T_, typename VISITOR_, typename PARENT_, typename ... CHILDREN_>
 	friend
 	class State;
 	

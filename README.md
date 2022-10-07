@@ -11,6 +11,11 @@ constexpr and templates.
 
 * Helper macros to simplify creation of boiler-plate code
 
+## Building the project
+
+pw-hsm is a header-only (template) library.  It does provide a few compilation
+option macros listed below:
+
 ## Authors
 
 * **Patrick Wright** - [@pwsoftwaredesigns](https://github.com/pwsoftwaredesigns)

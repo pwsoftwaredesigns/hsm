@@ -7,6 +7,9 @@
 #include <ctti/nameof.hpp>
 #include <functional>
 #include <memory>
+#if PW_HSM_USE_ETL == 1
+	#include <etl/variant_pool.h>
+#endif
 
 namespace pw::hsm {
 
@@ -33,20 +36,27 @@ struct nearest_ancestor<T, U, std::enable_if_t<std::is_same_v<T, typename U::par
 * class Root;
 * class State1 : public State<MyState, Root, State11, State12>;
 */
-template <typename T, typename PARENT, typename ... CHILDREN>
+template <typename T, typename VISITOR, typename PARENT, typename ... CHILDREN>
 class State : 
-	public AbstractState<typename PARENT::visitor_type>
+	public AbstractState<VISITOR/*typename PARENT::visitor_type*/>
 {
-	template <typename T_, typename PARENT_, typename ... CHILDREN_>
+	template <typename T_, typename VISITOR_, typename PARENT_, typename ... CHILDREN_>
 	friend
 	class State;
 	
 public:
 	using parent_type = PARENT;
-	using visitor_type = typename parent_type::visitor_type;
+	//using visitor_type = typename parent_type::visitor_type;
+	using visitor_type = VISITOR;
 	using abstract_event_type = AbstractEvent<visitor_type>;
-	using state_machine_type = typename parent_type::state_machine_type;
 		
+private:
+#if PW_HSM_USE_ETL == 1
+	using unique_ptr_type = std::unique_ptr<AbstractState<visitor_type>, std::function<void(AbstractState<visitor_type>*)>>;
+#else
+	using unique_ptr_type = std::unique_ptr<AbstractState<visitor_type>>;
+#endif
+	
 	template <typename ROOT_, typename CHILD_>
 	inline static constexpr bool _has_child() {
 		return ROOT_::template has_child<CHILD_>();
@@ -157,7 +167,7 @@ protected:
 	*        itself (i.e., an instance of StateMachine<>)
 	*/
 	inline auto& root() const {
-		return parent<state_machine_type>();
+		return parent<typename parent_type::state_machine_type>();
 	}
 	
 private:
@@ -165,8 +175,18 @@ private:
 	* @brief Create/"enter" the initial (first) child state
 	*/
 	void _init() override {
-		_state = std::make_unique<first_of_t<CHILDREN...>>(static_cast<T&>(*this));
-		_state->_init();
+#if PW_HSM_USE_ETL == 1
+		auto s = _statePool.template create<first_of_t<CHILDREN...>>(static_cast<T&>(*this));
+#else
+		auto s = std::make_unique<first_of_t<CHILDREN...>>(static_cast<T&>(*this));
+#endif
+		s->_init();
+		
+#if PW_HSM_USE_ETL == 1
+		_state = unique_ptr_type{s, [this](AbstractState<visitor_type>* ptr){ _statePool.destroy(ptr); }};
+#else
+		_state = std::move(s);
+#endif
 	}
 	
 	/**
@@ -186,34 +206,44 @@ private:
 			this->_init();
 		} else {
 			_deinit();
-			
+#if PW_HSM_USE_ETL == 1
+			auto s = _statePool.template create<typename nearest_ancestor<T, DEST_>::type>(static_cast<T&>(*this));
+#else
 			auto s = std::make_unique<typename nearest_ancestor<T, DEST_>::type>(static_cast<T&>(*this));
+#endif
 			s->template _doTransition<DEST_>();
+#if PW_HSM_USE_ETL == 1
+			_state = unique_ptr_type{s, [this](AbstractState<visitor_type>* ptr){ _statePool.destroy(ptr); }};
+#else
 			_state = std::move(s);
+#endif
 		}
 	}
 	
 private:
 	parent_type& _parent;
-	std::unique_ptr<AbstractState<visitor_type>> _state;
+#if PW_HSM_USE_ETL == 1
+	etl::variant_pool<1, CHILDREN...> _statePool;
+#endif
+	unique_ptr_type _state;
 };
 
 //-----[ TEMPLATE CLASS: State ]------------------------------------------------
 /**
 * @brief Specialization of State with no children (i.e., a leaf state)
 */
-template <typename T, typename PARENT>
-class State<T, PARENT> : 
-	public AbstractState<typename PARENT::visitor_type>
+template <typename T, typename VISITOR, typename PARENT>
+class State<T, VISITOR, PARENT> : 
+	public AbstractState<VISITOR/*typename PARENT::visitor_type*/>
 {
-	template <typename T_, typename PARENT_, typename ... CHILDREN_>
+	template <typename T_, typename VISITOR_, typename PARENT_, typename ... CHILDREN_>
 	friend
 	class State;
 	
 public:
 	using parent_type = PARENT;
-	using visitor_type = typename parent_type::visitor_type;
-	using state_machine_type = typename parent_type::state_machine_type;
+	//using visitor_type = typename parent_type::visitor_type;
+	using visitor_type = VISITOR;
 		
 	template <typename CHILD_>
 	inline static constexpr bool has_child() { return false; }
@@ -248,7 +278,7 @@ protected:
 	}
 	
 	inline auto& root() const {
-		return parent<state_machine_type>();
+		return parent<typename parent_type::state_machine_type>();
 	}
 	
 private:
