@@ -1,7 +1,7 @@
 #include "common.hpp"
 
 using namespace pw::hsm;
-
+	
 //Must forward-declare all states
 class Root;
 class State1;
