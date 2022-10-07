@@ -6,12 +6,19 @@ INCLUDES += -I$(ROOT)/include
 INCLUDES += -I$(ROOT)/lib/ctti/include
 INCLUDES += -I$(ROOT)/lib/map-macro
 
+DEFINES += -D'PW_HSM_TRANSITION_TRACE(source_, dest_)=std::cout << "\033[1;33mTRANSITION: " << source_ << " -> " << dest_ << "\033[m" << std::endl'
+DEFINES += -D'PW_HSM_HANDLED_TRACE()=std::cout << "\033[1;33mHANDLED\033[m" << std::endl'
+DEFINES += -D'PW_HSM_PASS_TRACE()=std::cout << "\033[1;33mPASS\033[m" << std::endl'
+
 .PHONY: all
-all: example1
+all: example1 example2
 
 example1: example1.cpp
-	$(CXX) $(CXX_STD) $(INCLUDES) $^ -o $@
+	$(CXX) $(CXX_STD) $(INCLUDES) $(DEFINES) $^ -o $@
 
-.PHONY: preprocessor
-preprocessor: example1.cpp
-	$(CXX) -E $(CXX_STD) $(INCLUDES) $^
+example2: example2.cpp
+	$(CXX) $(CXX_STD) $(INCLUDES) $(DEFINES) $^ -o $@
+	
+.PHONY: clean
+clean:
+	rm -r *.exe

@@ -109,7 +109,7 @@ public:
 		if constexpr (has_child<DEST_>()) {
 			//This state (the least-common-ancestor) will perform the transition
 			return [this](){ 
-				std::cout << "\033[1;33mTRANSITION: " << childName() << " -> " << ctti::nameof<DEST_>() << "\033[m" << std::endl;
+				PW_HSM_TRANSITION_TRACE(childName(), ctti::nameof<DEST_>());
 				this->_doTransition<DEST_>(); 
 				return true; 
 			};
