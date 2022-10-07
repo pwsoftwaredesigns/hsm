@@ -1,3 +1,8 @@
+/**
+* @brief File included by all SOURCE (*.cpp) files which contains declarations
+*        of all states
+*/
+
 #ifndef EXAMPLES_EXAMPLE3_INCLUDES_HPP_
 #define EXAMPLES_EXAMPLE3_INCLUDES_HPP_
 
