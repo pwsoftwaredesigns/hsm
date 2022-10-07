@@ -52,6 +52,6 @@
 	}
 #define _STATE_MACHINE_VISITOR_VISIT(x_) _STATE_MACHINE_VISITOR_VISITX x_
 #define _STATE_MACHINE_VISITOR_VISITX(name_, ...)\
-	virtual ::pw::hsm::state_return_type visit(const name_& e) { return ::pw::hsm::PASS; }
+	virtual ::pw::hsm::return_type visit(const name_& e) { return ::pw::hsm::PASS; }
 
 #endif //PW_HSM_MACROS_HPP_

@@ -23,7 +23,7 @@
 namespace pw::hsm {
 
 using name_string_type = ctti::detail::cstring;
-using state_return_type = std::function<bool()>;
+using return_type = std::function<bool()>;
 
 constexpr auto HANDLED = [](){ PW_HSM_HANDLED_TRACE(); return true; };
 constexpr auto PASS = [](){ PW_HSM_PASS_TRACE(); return false; };

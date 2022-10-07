@@ -12,7 +12,7 @@ public:
 	using visitor_type = VISITOR;
 	
 public:
-	virtual state_return_type accept(visitor_type& visitor) const = 0;
+	virtual return_type accept(visitor_type& visitor) const = 0;
 	virtual const char* name() const = 0;
 };
 

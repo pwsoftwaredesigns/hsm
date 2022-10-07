@@ -31,7 +31,7 @@
 #define _DEFINE_BASIC_STATE_VISITORS(events_) _DEFINE_BASIC_STATE_VISITORSX events_
 #define _DEFINE_BASIC_STATE_VISITORSX(...) MAP(_DEFINE_BASIC_STATE_VISITOR, ##__VA_ARGS__)
 #define _DEFINE_BASIC_STATE_VISITOR(e_)\
-	::pw::hsm::state_return_type visit(const e_& e) override {\
+	::pw::hsm::return_type visit(const e_& e) override {\
 		PRINT_TRACE();\
 		return PASS;\
 	}

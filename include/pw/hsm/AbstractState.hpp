@@ -28,7 +28,7 @@ public:
 	AbstractState& operator=(const AbstractState&) = delete;
 	
 public:
-	virtual state_return_type dispatch(const AbstractEvent<VISITOR>& e) {
+	virtual return_type dispatch(const AbstractEvent<VISITOR>& e) {
 		return e.accept(*this);
 	}
 	

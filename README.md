@@ -63,7 +63,7 @@ public:
 	}
 	
 public:
-	::pw::hsm::state_return_type visit(const Event1& e) override { 
+	::pw::hsm::return_type visit(const Event1& e) override { 
 		/*
 		* Return pw::HSM::PASS to indicate that this state has NOT fully handled
 		* this event.  The event WILL be passed upwards to the parent state.
@@ -71,7 +71,7 @@ public:
 		return PASS;
 	}
 	
-	::pw::hsm::state_return_type visit(const Event2& e) override {
+	::pw::hsm::return_type visit(const Event2& e) override {
 		/*
 		* Return pw::HSM::HANDLED to indicate that this state has fully handled
 		* this event.  The event will NOT be passed upwards to the parent state

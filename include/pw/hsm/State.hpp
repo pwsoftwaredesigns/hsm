@@ -92,7 +92,7 @@ public:
 	* event (i.e., returns PASS), then the event will be dispatched to this
 	* state via the visitor design pattern.
 	*/
-	state_return_type dispatch(const abstract_event_type& e) {
+	return_type dispatch(const abstract_event_type& e) {
 		//Dispatch to current child first
 		if (_state) {
 			bool result = _state->dispatch(e)();
@@ -115,7 +115,7 @@ public:
 	* This is achieved by returning callback functions.
 	*/
 	template <typename DEST_>
-	state_return_type transition() {
+	return_type transition() {
 		if constexpr (has_child<DEST_>()) {
 			//This state (the least-common-ancestor) will perform the transition
 			return [this](){ 
@@ -259,7 +259,7 @@ public:
 	
 public:
 	template <typename DEST>
-	state_return_type transition() {
+	return_type transition() {
 		//This state has no children, so the parent+ state needs to transition
 		return [this](){ return _parent.template transition<DEST>()(); };
 	}

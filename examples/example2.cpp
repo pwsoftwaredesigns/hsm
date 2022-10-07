@@ -70,12 +70,12 @@ public:
 	}
 	
 public:
-	::pw::hsm::state_return_type visit(const Event1& e) override { 
+	::pw::hsm::return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		return HANDLED;
 	}
 	
-	::pw::hsm::state_return_type visit(const Event2& e) override { 
+	::pw::hsm::return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 		return HANDLED;
 	}
@@ -99,12 +99,12 @@ public:
 		PRINT_TRACE();
 	}
 	
-	::pw::hsm::state_return_type visit(const Event1& e) override { 
+	::pw::hsm::return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
 	
-	::pw::hsm::state_return_type visit(const Event2& e) override { 
+	::pw::hsm::return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
@@ -132,13 +132,13 @@ public:
 	}
 	
 public:
-	::pw::hsm::state_return_type visit(const Event1& e) override { 
+	::pw::hsm::return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		parent().publicVariable = e.arg();
 		return PASS;
 	}
 	
-	::pw::hsm::state_return_type visit(const Event2& e) override { 
+	::pw::hsm::return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 
 		//Transition to sibling state
@@ -165,7 +165,7 @@ public:
 	}
 	
 public:
-	::pw::hsm::state_return_type visit(const Event1& e) override { 
+	::pw::hsm::return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		
 		parent<Root>().foo = e.arg();
@@ -173,7 +173,7 @@ public:
 		return PASS;
 	}
 	
-	::pw::hsm::state_return_type visit(const Event2& e) override { 
+	::pw::hsm::return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 		return transition<State22>();
 	}
@@ -194,13 +194,13 @@ public:
 		PRINT_TRACE();
 	}
 	
-	::pw::hsm::state_return_type visit(const Event1& e) override { 
+	::pw::hsm::return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 			
 		return HANDLED;
 	}
 	
-	::pw::hsm::state_return_type visit(const Event2& e) override { 
+	::pw::hsm::return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 
 		//Self-transition

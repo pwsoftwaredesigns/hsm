@@ -22,7 +22,7 @@ public:
 	}
 	
 public:
-	state_return_type accept(visitor_type& visitor) const override {
+	return_type accept(visitor_type& visitor) const override {
 		return visitor.visit(*this);
 	}
 	

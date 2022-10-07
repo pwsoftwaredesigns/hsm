@@ -10,7 +10,7 @@ PW_HSM_STATE(StateMachine, LampOn, Lamp)
 public:
 	LampOn(parent_type& parent);
 	~LampOn();
-	::pw::hsm::state_return_type visit(const EPowerButtonPressed& e) override;
+	::pw::hsm::return_type visit(const EPowerButtonPressed& e) override;
 };
 
 } //namespace lamp

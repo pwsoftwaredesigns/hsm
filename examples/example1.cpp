@@ -38,12 +38,12 @@ public:
 	}
 	
 public:
-	::pw::hsm::state_return_type visit(const Event1& e) override { 
+	::pw::hsm::return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
 	
-	::pw::hsm::state_return_type visit(const Event2& e) override { 
+	::pw::hsm::return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
@@ -64,12 +64,12 @@ public:
 	}
 	
 public:
-	::pw::hsm::state_return_type visit(const Event1& e) override { 
+	::pw::hsm::return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
 	
-	::pw::hsm::state_return_type visit(const Event2& e) override { 
+	::pw::hsm::return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
@@ -90,12 +90,12 @@ public:
 	}
 	
 public:
-	::pw::hsm::state_return_type visit(const Event1& e) override { 
+	::pw::hsm::return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
 	
-	::pw::hsm::state_return_type visit(const Event2& e) override { 
+	::pw::hsm::return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
@@ -116,12 +116,12 @@ public:
 	}
 	
 public:
-	::pw::hsm::state_return_type visit(const Event1& e) override { 
+	::pw::hsm::return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
 	
-	::pw::hsm::state_return_type visit(const Event2& e) override { 
+	::pw::hsm::return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
@@ -142,12 +142,12 @@ public:
 	}
 	
 public:
-	::pw::hsm::state_return_type visit(const Event1& e) override { 
+	::pw::hsm::return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
 	
-	::pw::hsm::state_return_type visit(const Event2& e) override { 
+	::pw::hsm::return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
@@ -168,12 +168,12 @@ public:
 	}
 	
 public:
-	::pw::hsm::state_return_type visit(const Event1& e) override { 
+	::pw::hsm::return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
 	
-	::pw::hsm::state_return_type visit(const Event2& e) override { 
+	::pw::hsm::return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 		return PASS;
 	}
@@ -194,12 +194,12 @@ public:
 	}
 	
 public:
-	::pw::hsm::state_return_type visit(const Event1& e) override { 
+	::pw::hsm::return_type visit(const Event1& e) override { 
 		PRINT_TRACE();
 		return HANDLED;
 	}
 	
-	::pw::hsm::state_return_type visit(const Event2& e) override { 
+	::pw::hsm::return_type visit(const Event2& e) override { 
 		PRINT_TRACE();
 		return HANDLED;
 	}

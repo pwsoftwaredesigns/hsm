@@ -12,7 +12,7 @@ LampOn::~LampOn() {
 	PRINT_TRACE();
 }
 
-::pw::hsm::state_return_type LampOn::visit(const EPowerButtonPressed& e) {
+::pw::hsm::return_type LampOn::visit(const EPowerButtonPressed& e) {
 	std::cout << "Turning lamp off" << std::endl;
 	return transition<LampOff>();
 }
