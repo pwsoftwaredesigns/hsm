@@ -4,3 +4,6 @@
 [submodule "map-macro"]
 	path = lib/map-macro
 	url = https://github.com/swansontec/map-macro.git
+[submodule "lib/etl"]
+	path = lib/etl
+	url = https://github.com/ETLCPP/etl.git
