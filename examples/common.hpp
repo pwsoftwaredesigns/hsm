@@ -6,8 +6,8 @@
 #include <pw/hsm/includes.hpp>
 #include <map.h>
 
-#define PRINT_STATEMENT(s_) std::cout << "\033[1;32m" << #s_ << "\033[m" << std::endl; s_
-#define PRINT_CURRENT_STATE(sm_) std::cout << "\033[1;34mCurrent State: " << sm_.currentStateName() << "\033[m" << std::endl << std::endl
+#define PRINT_STATEMENT(s_) std::cout << std::endl << "\033[1;32m" << #s_ << "\033[m" << std::endl; s_
+#define PRINT_CURRENT_STATE(sm_) std::cout << "\033[1;34mCurrent State: " << sm_.currentStateName() << "\033[m" << std::endl
 #define PRINT_TRACE() std::cout << __PRETTY_FUNCTION__ << std::endl
 
 #define DEFINE_BASIC_STATE(name_, parent_, events_, ...)\
