@@ -29,15 +29,32 @@ class State11;
 class State12;
 ```
 
-Second, use a macro to defined "traits" for you state machine.  This includes
-all the events you state machine will handle.
+Second, define your events.
 
 ```cmake
-PW_HSM_STATE_MACHINE_TRAITS(
+PW_HSM_EVENT(
+	MyStateMachine,
+	Event1,
+	()
+);
+
+PW_HSM_EVENT(
+	MyStateMachine,
+	Event2,
+	(int, a),
+	(int, b)
+);
+```
+
+Next, use a macro to defined "traits" for you state machine.  This includes the
+names of all the events your state machine will handle.
+
+```cmake
+PW_HSM_TRAITS(
 	MyStateMachine, 
 	RootState,
-	(Event1),
-	(Event2)
+	Event1,
+	Event2
 );
 ```
 
@@ -49,7 +66,11 @@ parent state must have the **complete** definiton of all its children in order
 to create a pool containing them.
 
 ```cmake
-PW_HSM_STATE(MyStateMachine, State11, State1)
+PW_HSM_STATE(
+	MyStateMachine, //Name of the state machine
+	State11,        //Name of this state
+	State1          //Name of this state's parent
+)
 {
 public:
 	State11(parent_type& parent) :
@@ -106,7 +127,7 @@ PW_HSM_STATE(MyStateMachine, RootState, MyStateMachine, State1)
 Finally, define the state machine.
 
 ```cmake
-PW_HSM_STATE_MACHINE(MyStateMachine) {
+PW_HSM(MyStateMachine) {
 public:
 	MyStateMachine()
 	{
@@ -139,6 +160,8 @@ sm.deinit();
 > ***Note:*** Because your actual state classes inherit from the template State,
 but the implementation is contained within this subclass, you need to call
 deinit() to "exit" states in the correct order.
+
+**See the [examples](examples/) folder for more detailed examples**
 
 ## Building the project
 
