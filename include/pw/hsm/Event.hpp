@@ -6,17 +6,33 @@
 #include <tuple>
 
 namespace pw::hsm {
-
-//-----[ TEMPLATE CLASS: Event ]------------------------------------------------
-template <typename NAME, typename VISITOR, typename ... ARGS> 
-class Event : public AbstractEvent<VISITOR>
+	
+//-----[ TEMPLATE CLASS: EventBase ]--------------------------------------------
+template <typename T, typename VISITOR>
+class EventBase : public AbstractEvent<VISITOR>
 {
 public:
 	using visitor_type = VISITOR;
 	
 public:
-	Event(ARGS&& ... args):
-		_args(std::forward<ARGS>(args)...)
+	return_type accept(visitor_type& visitor) const override {
+		return visitor.visit(static_cast<const T&>(*this));
+	}
+	
+	name_string_type name() const override { return ctti::nameof<T>(); }
+};
+
+//-----[ TEMPLATE CLASS: Event ]------------------------------------------------
+template <typename NAME, typename VISITOR, typename ... ARGS> 
+class Event : public EventBase<Event<NAME, VISITOR, ARGS...>, VISITOR>
+{
+public:
+	using visitor_type = VISITOR;
+	
+public:
+	template <typename ... ARGS_>
+	Event(ARGS_&& ... args):
+		_args(std::forward<ARGS_>(args)...)
 	{
 		
 	}
@@ -29,7 +45,7 @@ public:
 	template <unsigned int N = 0>
 	auto arg() const { return std::get<N>(_args); }
 		
-	const char* name() const override { return NAME::value(); }
+	name_string_type name() const final { return NAME::value(); }
 	
 private:
 	std::tuple<ARGS...> _args;

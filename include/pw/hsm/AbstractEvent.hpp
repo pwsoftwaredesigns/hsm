@@ -13,7 +13,7 @@ public:
 	
 public:
 	virtual return_type accept(visitor_type& visitor) const = 0;
-	virtual const char* name() const = 0;
+	virtual name_string_type name() const = 0;
 };
 
 } //namespace pw::hsm
