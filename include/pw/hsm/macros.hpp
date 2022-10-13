@@ -64,13 +64,13 @@
 * @param parent_ The name of this state's parent state (class)
 * @param ... List of child states
 */
-#define PW_HSM_STATE(sm_, name_, parent_, ...) PW_HSM_STATE_ADV(sm_, name_, _PW_HSM_VISITOR(sm_), parent_, ##__VA_ARGS__)
+#define PW_HSM_STATE(sm_, name_, parent_, ...) PW_HSM_STATE_ADV(name_, _PW_HSM_VISITOR(sm_), parent_, ##__VA_ARGS__)
 
 /**
 * @brief Advanced version of @ref PW_HSM_STATE where the visitor class name is
 *        explicitly provided
 */			
-#define PW_HSM_STATE_ADV(sm_, name_, visitor_, parent_, ...)\
+#define PW_HSM_STATE_ADV(name_, visitor_, parent_, ...)\
 	class name_:\
 		public ::pw::hsm::State<name_, visitor_, parent_, ##__VA_ARGS__>
 			
