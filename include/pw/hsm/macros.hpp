@@ -5,8 +5,7 @@
 #error "GNU extensions must be availabel for ##__VA_ARGS__ to work"
 #endif
 
-#include <map.h>
-#include "map_p.h"
+#include <pw/macros/map.h>
 
 /**
 * @brief Declare an event type
@@ -20,7 +19,7 @@
 	class _PW_HSM_VISITOR(sm_);\
 	class name_ : public ::pw::hsm::EventBase<name_, _PW_HSM_VISITOR(sm_)> {\
 	public:\
-		MAP(_PW_HSM_EVENT,##__VA_ARGS__)\
+		PW_MAP(_PW_HSM_EVENT,##__VA_ARGS__)\
 	}
 
 /**
@@ -68,7 +67,7 @@
 #define _PW_HSM_VISITOR_IMPL(name_, ...)\
 	class name_ {\
 	public:\
-		MAP(_PW_HSM_VISITOR_IMPL_VISIT, ##__VA_ARGS__)\
+		PW_MAP(_PW_HSM_VISITOR_IMPL_VISIT, ##__VA_ARGS__)\
 	}
 #define _PW_HSM_VISITOR_IMPL_VISIT(name_)\
 	virtual ::pw::hsm::return_type visit(const name_& e) { return ::pw::hsm::PASS; }
