@@ -1,9 +1,9 @@
 [submodule "ctti"]
 	path = lib/ctti
 	url = https://github.com/Manu343726/ctti.git
-[submodule "map-macro"]
-	path = lib/map-macro
-	url = https://github.com/swansontec/map-macro.git
 [submodule "lib/etl"]
 	path = lib/etl
 	url = https://github.com/ETLCPP/etl.git
+[submodule "lib/lib-pw-macros"]
+	path = lib/lib-pw-macros
+	url = https://github.com/pwsoftwaredesigns/lib-pw-macros.git
