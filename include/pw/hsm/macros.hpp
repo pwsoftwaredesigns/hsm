@@ -15,14 +15,14 @@
 * @param ... List of type-name pairs of arguments for the event in the form
 *            ([type], [name]), ...
 */
-#define PW_HSM_EVENT(sm_, name_, ...) PW_HSM_EVENT_ADV(sm_, name_, _PW_HSM_VISITOR(sm_), ##__VA_ARGS__)
+#define PW_HSM_EVENT(sm_, name_, ...) PW_HSM_EVENT_ADV(name_, _PW_HSM_VISITOR(sm_), ##__VA_ARGS__)
 
 /**
 * @brief Advanced version of @ref PW_HSM_EVENT where the visitor class name
 *        is explicitly provided
 */	
-#define PW_HSM_EVENT_ADV(sm_, name_, visitor_, ...)\
-	class _PW_HSM_VISITOR(sm_);\
+#define PW_HSM_EVENT_ADV(name_, visitor_, ...)\
+	class visitor_;\
 	class name_ : public ::pw::hsm::EventBase<name_, visitor_> {\
 	public:\
 		PW_MAP(_PW_HSM_EVENT,##__VA_ARGS__)\
