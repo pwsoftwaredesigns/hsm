@@ -166,8 +166,8 @@ protected:
 	* @brief A helper method which returns a reference the base state machine
 	*        itself (i.e., an instance of StateMachine<>)
 	*/
-	inline auto& root() const {
-		return parent<typename parent_type::state_machine_type>();
+	inline auto& ctx() const {
+		return _parent.ctx();
 	}
 	
 private:
@@ -277,8 +277,8 @@ protected:
 		}
 	}
 	
-	inline auto& root() const {
-		return parent<typename parent_type::state_machine_type>();
+	inline auto& ctx() const {
+		return _parent.ctx();
 	}
 	
 private:

@@ -77,6 +77,14 @@ public:
 		else return name();
 	}
 	
+	inline auto& ctx() {
+		return static_cast<T&>(*this);
+	}
+
+	inline const auto& ctx() const {
+		return static_cast<const T&>(*this);
+	}
+
 private:
 #if PW_HSM_USE_ETL == 1
 	etl::pool<ROOT, 1> _statePool;
